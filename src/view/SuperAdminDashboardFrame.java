@@ -871,7 +871,96 @@ public class SuperAdminDashboardFrame extends JFrame {
         button.setPreferredSize(new Dimension(120, 35));
         button.setFocusPainted(false);
         button.setBorderPainted(false);
+        button.setOpaque(true); // Required for Mac compatibility
         return button;
+    }
+
+    // Enhanced styled input components for better UI
+    private JTextField createStyledTextField(String text, int columns) {
+        JTextField field = new JTextField(text, columns);
+        field.setFont(new Font("Arial", Font.PLAIN, 14));
+        field.setBackground(Color.WHITE);
+        field.setForeground(new Color(60, 60, 60));
+        field.setBorder(BorderFactory.createCompoundBorder(
+            BorderFactory.createLineBorder(new Color(180, 180, 180), 1),
+            BorderFactory.createEmptyBorder(10, 12, 10, 12)
+        ));
+        field.setPreferredSize(new Dimension(250, 40));
+        
+        // Add focus effect
+        field.addFocusListener(new java.awt.event.FocusAdapter() {
+            @Override
+            public void focusGained(java.awt.event.FocusEvent evt) {
+                field.setBorder(BorderFactory.createCompoundBorder(
+                    BorderFactory.createLineBorder(new Color(76, 175, 80), 2),
+                    BorderFactory.createEmptyBorder(9, 12, 9, 12)
+                ));
+            }
+            
+            @Override
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                field.setBorder(BorderFactory.createCompoundBorder(
+                    BorderFactory.createLineBorder(new Color(180, 180, 180), 1),
+                    BorderFactory.createEmptyBorder(10, 12, 10, 12)
+                ));
+            }
+        });
+        
+        return field;
+    }
+
+    private JTextField createStyledTextField(int columns) {
+        return createStyledTextField("", columns);
+    }
+
+    private JComboBox<String> createStyledComboBox(String[] items) {
+        JComboBox<String> combo = new JComboBox<>(items);
+        combo.setFont(new Font("Arial", Font.PLAIN, 14));
+        combo.setBackground(Color.WHITE);
+        combo.setForeground(new Color(60, 60, 60));
+        combo.setBorder(BorderFactory.createCompoundBorder(
+            BorderFactory.createLineBorder(new Color(180, 180, 180), 1),
+            BorderFactory.createEmptyBorder(8, 10, 8, 10)
+        ));
+        combo.setPreferredSize(new Dimension(250, 40));
+        combo.setOpaque(true);
+        
+        // Style the dropdown arrow button
+        combo.setUI(new javax.swing.plaf.basic.BasicComboBoxUI() {
+            @Override
+            protected JButton createArrowButton() {
+                JButton button = new JButton("▼");
+                button.setBackground(new Color(240, 240, 240));
+                button.setForeground(new Color(100, 100, 100));
+                button.setBorder(BorderFactory.createEmptyBorder());
+                button.setFocusPainted(false);
+                button.setOpaque(true);
+                return button;
+            }
+        });
+        
+        return combo;
+    }
+
+    private JComboBox<String> createStyledComboBox() {
+        return createStyledComboBox(new String[]{});
+    }
+
+    private JLabel createStyledLabel(String text) {
+        JLabel label = new JLabel(text);
+        label.setFont(new Font("Arial", Font.BOLD, 14));
+        label.setForeground(new Color(60, 60, 60));
+        return label;
+    }
+
+    private JPanel createFormPanel() {
+        JPanel panel = new JPanel(new GridBagLayout());
+        panel.setBackground(new Color(250, 250, 250));
+        panel.setBorder(BorderFactory.createCompoundBorder(
+            BorderFactory.createLineBorder(new Color(220, 220, 220), 1),
+            BorderFactory.createEmptyBorder(20, 25, 20, 25)
+        ));
+        return panel;
     }
 
     // Data loading methods
@@ -1375,34 +1464,49 @@ public class SuperAdminDashboardFrame extends JFrame {
 
     private void showAddFlightDialog(DefaultTableModel model) {
         JDialog dialog = new JDialog(this, "Add New Flight", true);
-        dialog.setSize(500, 500);
+        dialog.setSize(550, 600);
         dialog.setLocationRelativeTo(this);
 
-        JPanel panel = new JPanel(new GridBagLayout());
-        panel.setBackground(Color.WHITE);
+        JPanel mainPanel = new JPanel(new BorderLayout());
+        mainPanel.setBackground(new Color(245, 245, 245));
+
+        // Title panel
+        JPanel titlePanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+        titlePanel.setBackground(new Color(245, 245, 245));
+        JLabel titleLabel = new JLabel("✈ Add New Flight");
+        titleLabel.setFont(new Font("Arial", Font.BOLD, 18));
+        titleLabel.setForeground(new Color(70, 130, 180));
+        titlePanel.add(titleLabel);
+        mainPanel.add(titlePanel, BorderLayout.NORTH);
+
+        JPanel panel = createFormPanel();
         GridBagConstraints gbc = new GridBagConstraints();
-        gbc.insets = new Insets(10, 10, 10, 10);
+        gbc.insets = new Insets(15, 15, 15, 15);
+        gbc.anchor = GridBagConstraints.WEST;
 
         // Flight number
-        JTextField flightNumberField = new JTextField(15);
+        JTextField flightNumberField = createStyledTextField(15);
+        flightNumberField.setToolTipText("Enter unique flight number (e.g., FL001)");
         gbc.gridx = 0; gbc.gridy = 0;
-        panel.add(new JLabel("Flight Number:"), gbc);
+        panel.add(createStyledLabel("Flight Number:"), gbc);
         gbc.gridx = 1;
         panel.add(flightNumberField, gbc);
 
         // Route selection
-        JComboBox<String> routeCombo = new JComboBox<>();
+        JComboBox<String> routeCombo = createStyledComboBox();
+        routeCombo.setToolTipText("Select the departure and arrival route");
         List<Route> routes = flightService.getAllRoutes();
         for (Route route : routes) {
             routeCombo.addItem(route.getDeparture() + " → " + route.getArrival() + " (" + route.getId() + ")");
         }
         gbc.gridx = 0; gbc.gridy = 1;
-        panel.add(new JLabel("Route:"), gbc);
+        panel.add(createStyledLabel("Route:"), gbc);
         gbc.gridx = 1;
         panel.add(routeCombo, gbc);
 
         // Aircraft selection (only ACTIVE aircraft)
-        JComboBox<String> aircraftCombo = new JComboBox<>();
+        JComboBox<String> aircraftCombo = createStyledComboBox();
+        aircraftCombo.setToolTipText("Select an active aircraft for this flight");
         List<Aircraft> aircrafts = flightService.getAllAircrafts();
         List<Aircraft> activeAircrafts = new ArrayList<>();
         for (Aircraft aircraft : aircrafts) {
@@ -1413,7 +1517,7 @@ public class SuperAdminDashboardFrame extends JFrame {
             }
         }
         gbc.gridx = 0; gbc.gridy = 2;
-        panel.add(new JLabel("Aircraft:"), gbc);
+        panel.add(createStyledLabel("Aircraft:"), gbc);
         gbc.gridx = 1;
         panel.add(aircraftCombo, gbc);
         
@@ -1428,7 +1532,8 @@ public class SuperAdminDashboardFrame extends JFrame {
         }
 
         // Gate selection
-        JComboBox<String> gateCombo = new JComboBox<>();
+        JComboBox<String> gateCombo = createStyledComboBox();
+        gateCombo.setToolTipText("Optional: Select a gate for the flight");
         gateCombo.addItem("No Gate Assigned");
         List<Gate> availableGates = flightService.getAvailableGates();
         for (Gate gate : availableGates) {
@@ -1437,45 +1542,55 @@ public class SuperAdminDashboardFrame extends JFrame {
             gateCombo.addItem("Gate " + gate.getGateNumber() + " (" + terminalName + ")");
         }
         gbc.gridx = 0; gbc.gridy = 3;
-        panel.add(new JLabel("Gate:"), gbc);
+        panel.add(createStyledLabel("Gate:"), gbc);
         gbc.gridx = 1;
         panel.add(gateCombo, gbc);
 
         // Departure time
-        JTextField departureField = new JTextField(15);
+        JTextField departureField = createStyledTextField(15);
+        departureField.setToolTipText("Format: YYYY-MM-DDTHH:MM (e.g., 2024-12-25T14:30)");
         LocalDateTime defaultDeparture = LocalDateTime.now().plusHours(24);
-        departureField.setText(defaultDeparture.toString());
+        departureField.setText(defaultDeparture.toString().substring(0, 16)); // Remove seconds
         gbc.gridx = 0; gbc.gridy = 4;
-        panel.add(new JLabel("Departure (YYYY-MM-DDTHH:MM):"), gbc);
+        panel.add(createStyledLabel("🕒 Departure Time:"), gbc);
         gbc.gridx = 1;
         panel.add(departureField, gbc);
 
         // Arrival time
-        JTextField arrivalField = new JTextField(15);
+        JTextField arrivalField = createStyledTextField(15);
+        arrivalField.setToolTipText("Format: YYYY-MM-DDTHH:MM (e.g., 2024-12-25T18:30)");
         LocalDateTime defaultArrival = LocalDateTime.now().plusHours(30);
-        arrivalField.setText(defaultArrival.toString());
+        arrivalField.setText(defaultArrival.toString().substring(0, 16)); // Remove seconds
         gbc.gridx = 0; gbc.gridy = 5;
-        panel.add(new JLabel("Arrival (YYYY-MM-DDTHH:MM):"), gbc);
+        panel.add(createStyledLabel("🕕 Arrival Time:"), gbc);
         gbc.gridx = 1;
         panel.add(arrivalField, gbc);
 
         // Price
-        JTextField priceField = new JTextField(15);
+        JTextField priceField = createStyledTextField(15);
+        priceField.setToolTipText("Enter flight price in dollars (e.g., 299.99)");
+        priceField.setText("0.00");
         gbc.gridx = 0; gbc.gridy = 6;
-        panel.add(new JLabel("Price:"), gbc);
+        panel.add(createStyledLabel("💰 Price ($):"), gbc);
         gbc.gridx = 1;
         panel.add(priceField, gbc);
 
         // Buttons
-        JPanel buttonPanel = new JPanel(new FlowLayout());
-        buttonPanel.setBackground(Color.WHITE);
-        JButton saveBtn = createStyledButton("Save", new Color(76, 175, 80));
-        JButton cancelBtn = createStyledButton("Cancel", new Color(244, 67, 54));
+        JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 15, 20));
+        buttonPanel.setBackground(new Color(250, 250, 250));
+        JButton saveBtn = createStyledButton("✓ Save Flight", new Color(76, 175, 80));
+        JButton cancelBtn = createStyledButton("✗ Cancel", new Color(244, 67, 54));
+        saveBtn.setPreferredSize(new Dimension(140, 40));
+        cancelBtn.setPreferredSize(new Dimension(140, 40));
         buttonPanel.add(saveBtn);
         buttonPanel.add(cancelBtn);
 
         gbc.gridx = 0; gbc.gridy = 7; gbc.gridwidth = 2;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
         panel.add(buttonPanel, gbc);
+
+        // Add form panel to main panel
+        mainPanel.add(panel, BorderLayout.CENTER);
 
         saveBtn.addActionListener(e -> {
             try {
@@ -1538,7 +1653,7 @@ public class SuperAdminDashboardFrame extends JFrame {
 
         cancelBtn.addActionListener(e -> dialog.dispose());
 
-        dialog.add(panel);
+        dialog.add(mainPanel);
         dialog.setVisible(true);
     }
 
@@ -1686,44 +1801,61 @@ public class SuperAdminDashboardFrame extends JFrame {
 
     private void showAddAircraftDialog(DefaultTableModel model) {
         JDialog dialog = new JDialog(this, "Add New Aircraft", true);
-        dialog.setSize(500, 450);
+        dialog.setSize(600, 550);
         dialog.setLocationRelativeTo(this);
 
-        JPanel panel = new JPanel(new GridBagLayout());
-        panel.setBackground(Color.WHITE);
-        GridBagConstraints gbc = new GridBagConstraints();
-        gbc.insets = new Insets(10, 10, 10, 10);
+        JPanel mainPanel = new JPanel(new BorderLayout());
+        mainPanel.setBackground(new Color(245, 245, 245));
 
-        JTextField modelField = new JTextField(15);
-        JTextField registrationField = new JTextField(15);
-        JTextField capacityField = new JTextField(15);
-        JTextField manufacturerField = new JTextField(15);
-        JTextField imagePathField = new JTextField(15);
+        // Title panel
+        JPanel titlePanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+        titlePanel.setBackground(new Color(245, 245, 245));
+        JLabel titleLabel = new JLabel("✈ Add New Aircraft");
+        titleLabel.setFont(new Font("Arial", Font.BOLD, 18));
+        titleLabel.setForeground(new Color(70, 130, 180));
+        titlePanel.add(titleLabel);
+        mainPanel.add(titlePanel, BorderLayout.NORTH);
+
+        JPanel panel = createFormPanel();
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.insets = new Insets(15, 15, 15, 15);
+        gbc.anchor = GridBagConstraints.WEST;
+
+        JTextField modelField = createStyledTextField(15);
+        modelField.setToolTipText("Enter aircraft model (e.g., Boeing 737-800)");
+        JTextField registrationField = createStyledTextField(15);
+        registrationField.setToolTipText("Enter registration number (e.g., N737BA)");
+        JTextField capacityField = createStyledTextField(15);
+        capacityField.setToolTipText("Enter passenger capacity (e.g., 180)");
+        JTextField manufacturerField = createStyledTextField(15);
+        manufacturerField.setToolTipText("Enter manufacturer name (e.g., Boeing)");
+        JTextField imagePathField = createStyledTextField(15);
         imagePathField.setEditable(false);
+        imagePathField.setToolTipText("Select an image file for the aircraft");
 
         gbc.gridx = 0; gbc.gridy = 0;
-        panel.add(new JLabel("Model:"), gbc);
+        panel.add(createStyledLabel("🏭 Model:"), gbc);
         gbc.gridx = 1;
         panel.add(modelField, gbc);
 
         gbc.gridx = 0; gbc.gridy = 1;
-        panel.add(new JLabel("Registration:"), gbc);
+        panel.add(createStyledLabel("🏷 Registration:"), gbc);
         gbc.gridx = 1;
         panel.add(registrationField, gbc);
 
         gbc.gridx = 0; gbc.gridy = 2;
-        panel.add(new JLabel("Capacity:"), gbc);
+        panel.add(createStyledLabel("👥 Capacity:"), gbc);
         gbc.gridx = 1;
         panel.add(capacityField, gbc);
 
         gbc.gridx = 0; gbc.gridy = 3;
-        panel.add(new JLabel("Manufacturer:"), gbc);
+        panel.add(createStyledLabel("🏢 Manufacturer:"), gbc);
         gbc.gridx = 1;
         panel.add(manufacturerField, gbc);
 
         // Image selection
         gbc.gridx = 0; gbc.gridy = 4;
-        panel.add(new JLabel("Aircraft Image:"), gbc);
+        panel.add(createStyledLabel("📷 Aircraft Image:"), gbc);
         gbc.gridx = 1;
         JPanel imagePanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 0, 0));
         imagePanel.setBackground(Color.WHITE);
@@ -1776,15 +1908,21 @@ public class SuperAdminDashboardFrame extends JFrame {
             }
         });
 
-        JPanel buttonPanel = new JPanel(new FlowLayout());
-        buttonPanel.setBackground(Color.WHITE);
-        JButton saveBtn = createStyledButton("Save", new Color(76, 175, 80));
-        JButton cancelBtn = createStyledButton("Cancel", new Color(244, 67, 54));
+        JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 15, 20));
+        buttonPanel.setBackground(new Color(250, 250, 250));
+        JButton saveBtn = createStyledButton("✓ Save Aircraft", new Color(76, 175, 80));
+        JButton cancelBtn = createStyledButton("✗ Cancel", new Color(244, 67, 54));
+        saveBtn.setPreferredSize(new Dimension(150, 40));
+        cancelBtn.setPreferredSize(new Dimension(150, 40));
         buttonPanel.add(saveBtn);
         buttonPanel.add(cancelBtn);
 
         gbc.gridx = 0; gbc.gridy = 6; gbc.gridwidth = 2;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
         panel.add(buttonPanel, gbc);
+
+        // Add form panel to main panel
+        mainPanel.add(panel, BorderLayout.CENTER);
 
         saveBtn.addActionListener(e -> {
             try {
@@ -1825,42 +1963,58 @@ public class SuperAdminDashboardFrame extends JFrame {
 
         cancelBtn.addActionListener(e -> dialog.dispose());
 
-        dialog.add(panel);
+        dialog.add(mainPanel);
         dialog.setVisible(true);
     }
 
     private void showAddRouteDialog(DefaultTableModel model) {
         JDialog dialog = new JDialog(this, "Add New Route", true);
-        dialog.setSize(400, 300);
+        dialog.setSize(500, 400);
         dialog.setLocationRelativeTo(this);
 
-        JPanel panel = new JPanel(new GridBagLayout());
-        panel.setBackground(Color.WHITE);
-        GridBagConstraints gbc = new GridBagConstraints();
-        gbc.insets = new Insets(10, 10, 10, 10);
+        JPanel mainPanel = new JPanel(new BorderLayout());
+        mainPanel.setBackground(new Color(245, 245, 245));
 
-        JTextField departureField = new JTextField(15);
-        JTextField arrivalField = new JTextField(15);
-        JTextField distanceField = new JTextField(15);
-        JTextField durationField = new JTextField(15);
+        // Title panel
+        JPanel titlePanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+        titlePanel.setBackground(new Color(245, 245, 245));
+        JLabel titleLabel = new JLabel("🗺 Add New Route");
+        titleLabel.setFont(new Font("Arial", Font.BOLD, 18));
+        titleLabel.setForeground(new Color(70, 130, 180));
+        titlePanel.add(titleLabel);
+        mainPanel.add(titlePanel, BorderLayout.NORTH);
+
+        JPanel panel = createFormPanel();
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.insets = new Insets(15, 15, 15, 15);
+        gbc.anchor = GridBagConstraints.WEST;
+
+        JTextField departureField = createStyledTextField(15);
+        departureField.setToolTipText("Enter departure city/airport (e.g., New York)");
+        JTextField arrivalField = createStyledTextField(15);
+        arrivalField.setToolTipText("Enter arrival city/airport (e.g., Los Angeles)");
+        JTextField distanceField = createStyledTextField(15);
+        distanceField.setToolTipText("Enter distance in kilometers (e.g., 3500)");
+        JTextField durationField = createStyledTextField(15);
+        durationField.setToolTipText("Enter flight duration in minutes (e.g., 300)");
 
         gbc.gridx = 0; gbc.gridy = 0;
-        panel.add(new JLabel("Departure:"), gbc);
+        panel.add(createStyledLabel("🛫 Departure:"), gbc);
         gbc.gridx = 1;
         panel.add(departureField, gbc);
 
         gbc.gridx = 0; gbc.gridy = 1;
-        panel.add(new JLabel("Arrival:"), gbc);
+        panel.add(createStyledLabel("🛬 Arrival:"), gbc);
         gbc.gridx = 1;
         panel.add(arrivalField, gbc);
 
         gbc.gridx = 0; gbc.gridy = 2;
-        panel.add(new JLabel("Distance (km):"), gbc);
+        panel.add(createStyledLabel("📏 Distance (km):"), gbc);
         gbc.gridx = 1;
         panel.add(distanceField, gbc);
 
         gbc.gridx = 0; gbc.gridy = 3;
-        panel.add(new JLabel("Duration (min):"), gbc);
+        panel.add(createStyledLabel("⏱ Duration (min):"), gbc);
         gbc.gridx = 1;
         panel.add(durationField, gbc);
 

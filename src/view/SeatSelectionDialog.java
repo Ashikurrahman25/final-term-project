@@ -300,6 +300,7 @@ public class SeatSelectionDialog extends JDialog {
         cancelButton.setBackground(new Color(244, 67, 54));
         cancelButton.setForeground(Color.WHITE);
         cancelButton.setFont(new Font("Arial", Font.BOLD, 12));
+        cancelButton.setOpaque(true); // Required for Mac compatibility
         cancelButton.addActionListener(e -> dispose());
 
         JButton refreshButton = new JButton("Refresh");
@@ -307,6 +308,7 @@ public class SeatSelectionDialog extends JDialog {
         refreshButton.setBackground(new Color(158, 158, 158));
         refreshButton.setForeground(Color.WHITE);
         refreshButton.setFont(new Font("Arial", Font.BOLD, 12));
+        refreshButton.setOpaque(true); // Required for Mac compatibility
         refreshButton.addActionListener(e -> refreshSeatMap());
 
         JButton purchaseButton = new JButton("Purchase Seats");
@@ -314,6 +316,7 @@ public class SeatSelectionDialog extends JDialog {
         purchaseButton.setBackground(new Color(76, 175, 80));
         purchaseButton.setForeground(Color.WHITE);
         purchaseButton.setFont(new Font("Arial", Font.BOLD, 12));
+        purchaseButton.setOpaque(true); // Required for Mac compatibility
         purchaseButton.addActionListener(this::purchaseSelectedSeats);
 
         buttonPanel.add(cancelButton);

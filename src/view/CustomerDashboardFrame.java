@@ -85,10 +85,12 @@ public class CustomerDashboardFrame extends JFrame {
         searchBtn.setBackground(new Color(76, 175, 80));
         searchBtn.setForeground(Color.WHITE);
         searchBtn.setFont(new Font("Arial", Font.BOLD, 12));
+        searchBtn.setOpaque(true); // Required for Mac compatibility
         
         clearBtn.setBackground(new Color(158, 158, 158));
         clearBtn.setForeground(Color.WHITE);
         clearBtn.setFont(new Font("Arial", Font.BOLD, 12));
+        clearBtn.setOpaque(true); // Required for Mac compatibility
 
         gbc.gridx = 0; gbc.gridy = 0;
         searchPanel.add(new JLabel("From:"), gbc);
@@ -177,6 +179,7 @@ public class CustomerDashboardFrame extends JFrame {
         bookBtn.setForeground(Color.WHITE);
         bookBtn.setFont(new Font("Arial", Font.BOLD, 12));
         bookBtn.setPreferredSize(new Dimension(180, 35));
+        bookBtn.setOpaque(true); // Required for Mac compatibility
         buttonPanel.add(bookBtn);
 
         // Load all flights initially
@@ -334,11 +337,13 @@ public class CustomerDashboardFrame extends JFrame {
         cancelBtn.setForeground(Color.WHITE);
         cancelBtn.setFont(new Font("Arial", Font.BOLD, 12));
         cancelBtn.setPreferredSize(new Dimension(120, 35));
+        cancelBtn.setOpaque(true); // Required for Mac compatibility
         
         refreshBtn.setBackground(new Color(158, 158, 158));
         refreshBtn.setForeground(Color.WHITE);
         refreshBtn.setFont(new Font("Arial", Font.BOLD, 12));
         refreshBtn.setPreferredSize(new Dimension(120, 35));
+        refreshBtn.setOpaque(true); // Required for Mac compatibility
         
         buttonPanel.add(cancelBtn);
         buttonPanel.add(refreshBtn);
@@ -516,6 +521,7 @@ public class CustomerDashboardFrame extends JFrame {
         JButton updateBtn = new JButton("Update Profile");
         updateBtn.setBackground(new Color(72, 201, 176));
         updateBtn.setForeground(Color.WHITE);
+        updateBtn.setOpaque(true); // Required for Mac compatibility
         
         gbc.gridx = 1; gbc.gridy = 5;
         panel.add(updateBtn, gbc);
@@ -817,6 +823,7 @@ public class CustomerDashboardFrame extends JFrame {
             cancelBtn.setForeground(Color.WHITE);
             cancelBtn.setFont(new Font("Arial", Font.BOLD, 12));
             cancelBtn.setFocusPainted(false);
+            cancelBtn.setOpaque(true); // Required for Mac compatibility
             cancelBtn.addActionListener(e -> {
                 dialog.dispose();
                 // Trigger the cancel ticket functionality
@@ -851,6 +858,7 @@ public class CustomerDashboardFrame extends JFrame {
         closeBtn.setForeground(Color.WHITE);
         closeBtn.setFont(new Font("Arial", Font.BOLD, 12));
         closeBtn.setFocusPainted(false);
+        closeBtn.setOpaque(true); // Required for Mac compatibility
         closeBtn.addActionListener(e -> dialog.dispose());
         buttonPanel.add(closeBtn);
 
@@ -1074,6 +1082,7 @@ public class CustomerDashboardFrame extends JFrame {
         closeBtn.setForeground(Color.WHITE);
         closeBtn.setFont(new Font("Arial", Font.BOLD, 12));
         closeBtn.setPreferredSize(new Dimension(100, 35));
+        closeBtn.setOpaque(true); // Required for Mac compatibility
         closeBtn.addActionListener(e -> dialog.dispose());
         buttonPanel.add(closeBtn);
 

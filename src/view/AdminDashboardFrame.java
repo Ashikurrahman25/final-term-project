@@ -577,6 +577,7 @@ public class AdminDashboardFrame extends JFrame {
         button.setPreferredSize(new Dimension(120, 35));
         button.setFocusPainted(false);
         button.setBorderPainted(false);
+        button.setOpaque(true); // Required for Mac compatibility
         return button;
     }
 

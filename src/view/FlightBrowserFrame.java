@@ -88,6 +88,7 @@ public class FlightBrowserFrame extends JFrame {
         searchBtn.setFont(new Font("Arial", Font.BOLD, 12));
         searchBtn.setFocusPainted(false);
         searchBtn.setBorderPainted(false);
+        searchBtn.setOpaque(true); // Required for Mac compatibility
         
         JButton clearBtn = new JButton("Clear");
         clearBtn.setPreferredSize(new Dimension(80, 35));
@@ -96,6 +97,7 @@ public class FlightBrowserFrame extends JFrame {
         clearBtn.setFont(new Font("Arial", Font.BOLD, 12));
         clearBtn.setFocusPainted(false);
         clearBtn.setBorderPainted(false);
+        clearBtn.setOpaque(true); // Required for Mac compatibility
 
         // Layout components vertically
         gbc.gridx = 0; gbc.gridy = 0; gbc.gridwidth = 2;
@@ -159,6 +161,7 @@ public class FlightBrowserFrame extends JFrame {
             JButton bookBtn = new JButton("Book Flight");
             bookBtn.setBackground(new Color(72, 201, 176));
             bookBtn.setForeground(Color.WHITE);
+            bookBtn.setOpaque(true); // Required for Mac compatibility
             bookBtn.addActionListener(e -> bookSelectedFlight());
             buttonPanel.add(bookBtn);
         }
@@ -427,6 +430,7 @@ public class FlightBrowserFrame extends JFrame {
         closeBtn.setForeground(Color.WHITE);
         closeBtn.setFont(new Font("Arial", Font.BOLD, 12));
         closeBtn.setPreferredSize(new Dimension(100, 35));
+        closeBtn.setOpaque(true); // Required for Mac compatibility
         closeBtn.addActionListener(e -> dialog.dispose());
         buttonPanel.add(closeBtn);
 

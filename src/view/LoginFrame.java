@@ -128,6 +128,7 @@ public class LoginFrame extends JFrame {
         button.setFont(new Font("Arial", Font.BOLD, 16));
         button.setFocusPainted(false);
         button.setBorderPainted(false);
+        button.setOpaque(true); // Required for Mac compatibility
         button.setCursor(new Cursor(Cursor.HAND_CURSOR));
         
         // Add hover effect
@@ -151,6 +152,7 @@ public class LoginFrame extends JFrame {
         button.setFont(new Font("Arial", Font.BOLD, 14));
         button.setFocusPainted(false);
         button.setBorderPainted(false);
+        button.setOpaque(true); // Required for Mac compatibility
         button.setCursor(new Cursor(Cursor.HAND_CURSOR));
         
         // Add hover effect
